@@ -1,0 +1,3 @@
+{
+  "rewrites": [{ "source": "/", "destination": "/expansion-portal.html" }]
+}
