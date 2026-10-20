@@ -463,6 +463,45 @@ tbody tr:last-child td{border-bottom:none;}
 .calcell.empty{background:transparent;border:none;}
 .calcell .dnum{color:var(--muted);font-weight:600;font-size:11px;}
 .calev{margin-top:4px;border-radius:6px;padding:4px 6px;color:#fff;font-size:10.5px;font-weight:700;line-height:1.2;cursor:pointer;}
+.calev.facil{border:1.5px dashed rgba(255,255,255,.75);font-style:italic;}
+/* Roadshow Calendar: page actions, collapsible grouped filters, request queue */
+.ph-actions{display:flex;gap:8px;align-items:center;}
+.calfilter{margin-bottom:14px;}
+.calfilter-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.filt-toggle{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 13px;font-family:inherit;font-size:12.5px;font-weight:800;color:var(--navy);cursor:pointer;}
+.filt-toggle .ft-count{color:var(--muted);font-weight:700;margin-left:4px;}
+.calfilter .cfg{margin-top:12px;}
+.calfilter .cfg-h{font-size:11.5px;font-weight:800;color:var(--navy);margin-bottom:7px;display:flex;align-items:center;gap:7px;}
+.calfilter .cfg-h span{color:var(--muted);font-weight:600;}
+.rrq-panel{margin-bottom:16px;padding:16px 18px;}
+.rrq-h h3{margin:0 0 3px;font-size:16px;color:var(--navy);}
+.rrq-h .rrq-count{background:#eef4ff;color:var(--medium);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:800;margin-left:6px;}
+.rrq-h p{margin:0 0 12px;font-size:13px;color:var(--muted);max-width:720px;}
+.rrq-empty{font-size:13px;color:var(--muted);padding:8px 0;}
+.rrq-card{border:1.5px solid var(--line);border-radius:13px;padding:13px 15px;margin-bottom:10px;background:#fff;}
+.rrq-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+.rrq-city{font-weight:800;color:var(--navy);font-size:15px;}
+.rrq-nocamp{font-weight:700;font-size:11px;color:#8a4b1a;background:#fff7ed;border:1px solid #f0b37e;border-radius:999px;padding:1px 8px;margin-left:6px;}
+.rrq-by{font-size:12.5px;color:var(--muted);margin-top:2px;}
+.rrq-by a{color:var(--medium);}
+.rrq-badge.pending{background:#fff7ed;color:#b4530f;border:1px solid #f0b37e;border-radius:999px;padding:3px 11px;font-size:11.5px;font-weight:800;white-space:nowrap;}
+.rrq-note{font-size:12.5px;color:var(--ink,#1b2440);font-style:italic;margin:9px 0 2px;}
+.rrq-dates{margin-top:11px;}
+.rrq-dates .rrq-l{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;}
+.rrq-dbtns{display:flex;gap:8px;flex-wrap:wrap;}
+.rrq-date{border:1.5px solid var(--medium);background:#fff;color:var(--medium);border-radius:10px;padding:8px 14px;font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;transition:background .15s,color .15s;}
+.rrq-date:hover{background:var(--medium);color:#fff;}
+.rrq-foot{margin-top:11px;}
+.rrq-history{margin-top:10px;}
+.rrq-history summary{font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;}
+.rrq-done{display:flex;gap:12px;align-items:center;font-size:12.5px;padding:6px 0;border-bottom:1px solid var(--line);}
+.rrq-done .rrq-dcity{font-weight:800;color:var(--navy);min-width:130px;}
+.rrq-done.scheduled .rrq-dstat{color:var(--green,#12B886);font-weight:700;}
+.rrq-done.declined .rrq-dstat{color:#c0392b;font-weight:700;}
+.rrq-done .rrq-dby{color:var(--muted);margin-left:auto;}
+.rr-dh{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:14px 0 6px;}
+.rr-dates{display:flex;gap:8px;flex-wrap:wrap;}
+.rr-dates input{font-family:inherit;font-size:13.5px;border:1.5px solid var(--line);border-radius:9px;padding:8px 10px;color:var(--navy);}
 
 /* Pipeline board */
 .board{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;}
@@ -926,8 +965,21 @@ const CAMPUSES = [
   {id:"shorthills", name:"Short Hills", hex:"#7A5AF8", owner:"joanna", status:"Pre-roadshow"},
   {id:"wynwood", name:"Wynwood", hex:"#E64980", owner:"kirsten", status:"Pre-roadshow"}
 ];
-const campusById = Object.fromEntries(CAMPUSES.map(c=>[c.id,c]));
+/* Campuses that OPENED this fall (2026–27). Expansion does NOT own their admissions — we only
+   facilitate roadshows on request. They share ONE designated color and stay OUT of the pipeline/workload. */
+const OPEN_HEX = "#64748B";
+const OPEN_CAMPUSES = [
+  {id:"okc",name:"Oklahoma City"},{id:"parkcity",name:"Park City"},{id:"southlake",name:"Southlake"},
+  {id:"woodlands",name:"The Woodlands"},{id:"tulsa",name:"Tulsa"},{id:"nashville",name:"Nashville"},
+  {id:"dorado",name:"Dorado, PR"},{id:"atlanta",name:"Atlanta"},{id:"santamonica",name:"Santa Monica"},
+  {id:"bocaraton",name:"Boca Raton"},{id:"miamibeach",name:"Miami Beach"},{id:"kirkland",name:"Kirkland"},
+  {id:"denver",name:"Denver"},{id:"chicago",name:"Chicago"},{id:"lajolla",name:"La Jolla"},
+  {id:"paloalto",name:"Palo Alto"},{id:"boston",name:"Boston"},{id:"greenwich",name:"Greenwich"},
+  {id:"eastbay",name:"East Bay"},{id:"southbay",name:"South Bay"}
+].map(c=>({...c, hex:OPEN_HEX, owner:null, open:true, status:"Open · facilitate only"}));
+const campusById = Object.fromEntries(CAMPUSES.concat(OPEN_CAMPUSES).map(c=>[c.id,c]));
 CAMPUSES.forEach(c=>{c.defaultOwner=c.owner;});
+const isOpenCampus = id => !!(campusById[id]&&campusById[id].open);
 const myCampusIds = () => CAMPUSES.filter(c=>c.owner===ME).map(c=>c.id);
 
 /* Stages (Expansion flow, coolest -> warmest). Parent-safe labels ("Shadow Day"). */
@@ -1355,6 +1407,16 @@ const ROADSHOWS = [
   {id:"rs_tor_1", campus:"tor", date:"2026-10-31"},{id:"rs_tor_2", campus:"tor", date:"2026-12-12"},{id:"rs_tor_3", campus:"tor", date:"2027-01-23"},
   {id:"rs_det_1", campus:"det", date:"2026-11-07"},{id:"rs_det_2", campus:"det", date:"2026-12-12"},{id:"rs_det_3", campus:"det", date:"2027-02-13"}
 ];
+/* Facilitate-only roadshows already on the calendar for open campuses (expansion staffs the event, doesn't own admissions). */
+const FACILITATE_ROADSHOWS = [
+  {id:"fr_nashville_1", campus:"nashville", date:"2026-11-14", facilitate:true},
+  {id:"fr_atlanta_1",   campus:"atlanta",   date:"2026-12-05", facilitate:true},
+  {id:"fr_denver_1",    campus:"denver",    date:"2027-01-16", facilitate:true}
+];
+/* Scheduled roadshow requests become facilitate-only calendar events; one merged event source. */
+function reqEvents(){ return (state.roadshowRequests||[]).filter(r=>r.status==='scheduled'&&r.chosenDate)
+  .map(r=>({id:'rev_'+r.id, campus:r.campusId||null, city:r.city, date:r.chosenDate, facilitate:true, requestId:r.id})); }
+function allRoadshowEvents(){ return ROADSHOWS.concat(FACILITATE_ROADSHOWS).concat(reqEvents()); }
 /* assign each guide-stage student to a specific roadshow session */
 const RS_ASSIGN={Vega:"rs_mpls_2",Rhea:"rs_cns_2",Atlas:"rs_sea_2",Halley:"rs_det_2"};
 STUDENTS.forEach(s=>{ if(["shadow_booked","approved","reshadow"].includes(s.stage)) s.roadshowId = RS_ASSIGN[s.last] || (ROADSHOWS.find(r=>r.campus===s.campus)||{}).id; });
@@ -1363,8 +1425,11 @@ STUDENTS.forEach(s=>{ if(["shadow_booked","approved","reshadow"].includes(s.stag
    STATE + HELPERS
    ===================================================================== */
 const state = {scope:"mine", view:"home", campus:null, tab:"overview", filterStage:"all", calCampus:"all", boardCampus:"all", selected:new Set(), calParentMode:false, compose:null, guideMode:false, guideRS:null, screenerSel:null, colorPickCampus:null, parentMode:false, parentStudent:null, deviceOS:"win", sortCol:"name", sortDir:"asc",
- cols:["name","grade","stage","parents","applied"], colPickOpen:false, activity:[]};
+ cols:["name","grade","stage","parents","applied"], colPickOpen:false, activity:[], roadshowRequests:[], calFilterOpen:false};
 const ACT_KEY="alphaActivity_v1";
+const RR_KEY="alphaRoadshowReq_v2";
+function saveRequests(){try{localStorage.setItem(RR_KEY,JSON.stringify(state.roadshowRequests));}catch(e){}}
+function restoreRequests(){try{const a=JSON.parse(localStorage.getItem(RR_KEY)||"null");if(Array.isArray(a))state.roadshowRequests=a;}catch(e){}}
 function saveActivity(){try{localStorage.setItem(ACT_KEY,JSON.stringify(state.activity));}catch(e){}}
 function restoreActivity(){try{const a=JSON.parse(localStorage.getItem(ACT_KEY)||"null");if(Array.isArray(a))state.activity=a;}catch(e){}}
 /* log a sent message so we can show correspondence history and warn on double-sends */
@@ -1987,12 +2052,56 @@ function offerActionHTML(s){
 }
 
 /* ---------- CALENDAR ---------- */
+/* collapsible, grouped campus filter for the Roadshow Calendar (expansion) */
+function calChip(c){ return `<button class="chip calchip ${state.calCampus===c.id?'active':''}" data-cal="${c.id}"><span class="cdot" style="background:${c.hex}"></span>${c.name}</button>`; }
+function calFilterHTML(){
+  const scoped=scopedCampuses();
+  const head=`<div class="calfilter-head">
+    <button class="chip calchip ${state.calCampus==='all'?'active':''}" data-cal="all"><span class="cdot" style="background:#8891ad"></span>All</button>
+    <button class="filt-toggle" data-calfilter>${state.calFilterOpen?'&#9662; Hide campus filters':'&#9656; Filter by campus'} <span class="ft-count">${scoped.length} expansion &middot; ${OPEN_CAMPUSES.length} open</span></button>
+  </div>`;
+  if(!state.calFilterOpen) return `<div class="calfilter">${head}</div>`;
+  return `<div class="calfilter">${head}
+    <div class="cfg">
+      <div class="cfg-h">Expansion campuses <span>&mdash; we own admissions</span></div>
+      <div class="filterbar">${scoped.map(calChip).join("")}</div>
+    </div>
+    <div class="cfg">
+      <div class="cfg-h"><span class="cdot" style="background:${OPEN_HEX}"></span>Open campuses &middot; facilitate only <span>&mdash; opened this fall, we don&rsquo;t own admissions</span></div>
+      <div class="filterbar">${OPEN_CAMPUSES.map(calChip).join("")}</div>
+    </div>
+  </div>`;
+}
+/* expansion-side review queue for incoming roadshow requests */
+function requestsPanelHTML(){
+  const reqs=state.roadshowRequests||[];
+  const pending=reqs.filter(r=>r.status==='pending');
+  const done=reqs.filter(r=>r.status!=='pending').slice().reverse();
+  const card=r=>`<div class="rrq-card">
+    <div class="rrq-top"><div><div class="rrq-city">${r.city}${r.campusId?'':' <span class="rrq-nocamp">new city &mdash; no campus yet</span>'}</div>
+      <div class="rrq-by">Requested by ${r.requesterName} &middot; <a href="mailto:${r.email}">${r.email}</a>${r.submittedAt?' &middot; '+fmt(r.submittedAt):''}</div></div>
+      <span class="rrq-badge pending">Needs a date</span></div>
+    ${r.note?`<div class="rrq-note">&ldquo;${r.note}&rdquo;</div>`:''}
+    <div class="rrq-dates"><span class="rrq-l">Pick the date your team can staff:</span>
+      <div class="rrq-dbtns">${r.dates.map(d=>`<button class="rrq-date" data-rrpick="${r.id}:${d}">${fmt(d)}</button>`).join("")}</div></div>
+    <div class="rrq-foot"><button class="btn sm ghost" data-rrdecline="${r.id}">Can&rsquo;t staff any of these</button></div>
+  </div>`;
+  const doneRow=r=>`<div class="rrq-done ${r.status}"><span class="rrq-dcity">${r.city}</span>
+    <span class="rrq-dstat">${r.status==='scheduled'?('&#10003; Scheduled '+fmt(r.chosenDate)):'&times; Declined'}</span>
+    <span class="rrq-dby">${r.requesterName}</span></div>`;
+  return `<div class="panel rrq-panel">
+    <div class="rrq-h"><h3>Roadshow requests${pending.length?` <span class="rrq-count">${pending.length} waiting</span>`:''}</h3>
+      <p>Directors of Admissions and the SAS team request expansion support here. Pick one of their three dates to put it on the calendar (facilitate-only &mdash; it won&rsquo;t touch your pipeline).</p></div>
+    ${pending.length?pending.map(card).join(""):'<div class="rrq-empty">No open requests right now. New requests will land here.</div>'}
+    ${done.length?`<details class="rrq-history"><summary>${done.length} past request${done.length>1?'s':''}</summary>${done.map(doneRow).join("")}</details>`:''}
+  </div>`;
+}
 function renderCalendar(){
   const parent=state.calParentMode;
   const ids = parent ? CAMPUSES.map(c=>c.id) : scopedCampusIds();
-  const chipCampuses=[{id:"all",name:"All",hex:"#8891ad"}].concat(parent?CAMPUSES:scopedCampuses());
   const months=[["2026-10","October 2026"],["2026-11","November 2026"],["2027-01","January 2027"]];
   if(parent){
+    const chipCampuses=[{id:"all",name:"All",hex:"#8891ad"}].concat(CAMPUSES);
     const cn=campusById[state.calCampus];
     crumb([{t:cn?("Alpha "+cn.name):"Alpha School"},{t:"Shadow Day Calendar"}]);
     $("#app").innerHTML=`
@@ -2002,32 +2111,69 @@ function renderCalendar(){
       <div class="pbanner">You applied to <b>Alpha ${cn?cn.name:''}</b>, so we're showing those Shadow Days first. Want to see another campus? Switch below &mdash; you can register wherever works.</div>
       <div class="filterbar">${chipCampuses.map(c=>
         `<button class="chip calchip ${state.calCampus===c.id?'active':''}" data-cal="${c.id}"><span class="cdot" style="background:${c.hex}"></span>${c.name}</button>`).join("")}</div>
-      <div class="panel panel-pad">${months.map(m=>monthHTML(m[0],m[1],ids,true)).join("")}</div>`;
+      <div class="panel panel-pad">${months.map(m=>monthHTML(m[0],m[1],ids,true,ROADSHOWS)).join("")}</div>`;
     return;
   }
   crumb([{t:"Command Center",home:true},{t:"Roadshow Calendar"}]);
+  const events=allRoadshowEvents();
   $("#app").innerHTML=`
     <div class="page-h"><div><h1>Roadshow Calendar</h1>
       <div class="sub">Color-coded by campus &middot; ${state.scope==="mine"?"your campuses":"all campuses"} &middot; parents see this as the Shadow Day calendar</div></div>
-      <button class="btn" data-home="1">&larr; Command Center</button></div>
-    <div class="filterbar">${chipCampuses.map(c=>
-      `<button class="chip calchip ${state.calCampus===c.id?'active':''}" data-cal="${c.id}"><span class="cdot" style="background:${c.hex}"></span>${c.name}</button>`).join("")}</div>
-    <div class="panel panel-pad">${months.map(m=>monthHTML(m[0],m[1],ids,false)).join("")}</div>`;
+      <div class="ph-actions"><button class="btn primary" data-reqroadshow>+ Request a Roadshow</button><button class="btn" data-home="1">&larr; Command Center</button></div></div>
+    ${requestsPanelHTML()}
+    ${calFilterHTML()}
+    <div class="panel panel-pad">${months.map(m=>monthHTML(m[0],m[1],ids,false,events)).join("")}</div>`;
 }
-function monthHTML(ym,label,scopeIds,parent){
+function monthHTML(ym,label,scopeIds,parent,events){
   const [y,mo]=ym.split("-").map(Number);
   const first=new Date(y,mo-1,1), start=first.getDay(), days=new Date(y,mo,0).getDate();
   let cells="";
   for(let i=0;i<start;i++) cells+='<div class="calcell empty"></div>';
   for(let d=1;d<=days;d++){
     const iso=`${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const evs=ROADSHOWS.filter(r=>r.date===iso && scopeIds.includes(r.campus) && (state.calCampus==="all"||r.campus===state.calCampus));
+    const evs=events.filter(r=>r.date===iso && (r.facilitate || scopeIds.includes(r.campus)) && (state.calCampus==="all"||r.campus===state.calCampus));
     cells+=`<div class="calcell"><div class="dnum">${d}</div>${evs.map(e=>{const c=campusById[e.campus];
-      const act= parent ? `data-toast="Shadow Day registration"` : `data-enter="${c.id}"`;
-      return `<div class="calev" style="background:${c.hex}" ${act}>${c.name}${parent?' Shadow Day':''}</div>`;}).join("")}</div>`;
+      const nm=c?c.name:(e.city||'Roadshow'); const hex=e.facilitate?OPEN_HEX:(c?c.hex:'#8891ad');
+      const act= parent ? `data-toast="Shadow Day registration"` : (e.facilitate?`data-rsinfo="${e.id}"`:`data-enter="${c?c.id:''}"`);
+      return `<div class="calev${e.facilitate?' facil':''}" style="background:${hex}" ${act} title="${e.facilitate?'Facilitate-only · '+nm:nm}">${nm}${parent?' Shadow Day':''}</div>`;}).join("")}</div>`;
   }
   return `<div class="calmonth"><h4>${label}</h4>
     <div class="calgrid">${["S","M","T","W","T","F","S"].map(d=>`<div class="caldow">${d}</div>`).join("")}${cells}</div></div>`;
+}
+/* Request a Roadshow popup (DoA / SAS facing) + submit */
+function openRoadshowRequest(){
+  const box=$("#gmodal"); box.classList.add("open");
+  const opts=OPEN_CAMPUSES.map(c=>`<option value="${c.id}">${c.name}</option>`).join("");
+  box.innerHTML=`<div class="cmp-box" style="max-width:560px">
+    <div class="cmp-head"><div><h2>Request a Roadshow</h2><div class="sub">For your city &mdash; our expansion team staffs and runs the event with you</div></div><button class="x" data-gm-x>&times;</button></div>
+    <div class="cmp-body">
+      <div class="cmp-field"><label>Your name</label><input id="rr_name" placeholder="First and last"></div>
+      <div class="cmp-field"><label>Your email</label><input id="rr_email" placeholder="you@alpha.school"></div>
+      <div class="cmp-field"><label>Campus / city</label>
+        <select id="rr_campus"><option value="">Select your campus&hellip;</option>${opts}<option value="other">Other / a city not listed</option></select></div>
+      <div class="cmp-field"><label>If you chose &ldquo;Other,&rdquo; type the city</label><input id="rr_city" placeholder="City, State"></div>
+      <div class="rr-dh">Three dates that could work (we&rsquo;ll confirm one)</div>
+      <div class="rr-dates"><input type="date" id="rr_d0"><input type="date" id="rr_d1"><input type="date" id="rr_d2"></div>
+    </div>
+    <div class="cmp-foot"><button class="btn" data-gm-x>Cancel</button><button class="btn primary" data-rrsubmit>Submit request</button></div>
+  </div>`;
+}
+function submitRoadshowRequest(){
+  const g=id=>{const el=document.getElementById(id);return el?el.value.trim():"";};
+  const name=g("rr_name"), email=g("rr_email"), sel=g("rr_campus"), cityIn=g("rr_city");
+  const dates=["rr_d0","rr_d1","rr_d2"].map(g).filter(Boolean);
+  if(!name){toast('<span class="k">Add your name</span> so we know who to confirm with.');return;}
+  if(!/.+@.+\..+/.test(email)){toast('<span class="k">Add a valid email</span> for the confirmation.');return;}
+  let campusId=null, city="";
+  if(sel&&sel!=='other'){ campusId=sel; city=(campusById[sel]||{}).name||sel; }
+  else { city=cityIn; }
+  if(!city){toast('<span class="k">Pick your campus</span> or type a city.');return;}
+  if(dates.length<3){toast('<span class="k">Add three dates</span> so we can find one we can staff.');return;}
+  state.roadshowRequests.push({id:'rr'+Date.now(), requesterName:name, email, campusId, city, dates, status:'pending', submittedAt:todayISO()});
+  saveRequests();
+  $("#gmodal").classList.remove("open");
+  renderCalendar();
+  toast('<span class="k">Request submitted</span> &mdash; your expansion team will confirm one of your dates.');
 }
 
 /* ---------- PIPELINE BOARD ---------- */
@@ -3461,6 +3607,12 @@ document.addEventListener("click",e=>{
   if(t.closest("[data-colpick]")){state.colPickOpen=!state.colPickOpen;renderCampusTab();return;}
   const colc=t.closest("[data-col]"); if(colc){const col=colc.dataset.col; if(col!=="name"){ if(state.cols.includes(col))state.cols=state.cols.filter(x=>x!==col); else state.cols=COL_ORDER.filter(x=>x===col||state.cols.includes(x)); persistCols(); } renderCampusTab(); return;}
   const cal=t.closest("[data-cal]"); if(cal){state.calCampus=cal.dataset.cal;renderCalendar();return;}
+  if(t.closest("[data-reqroadshow]")){openRoadshowRequest();return;}
+  if(t.closest("[data-calfilter]")){state.calFilterOpen=!state.calFilterOpen;renderCalendar();return;}
+  if(t.closest("[data-rrsubmit]")){submitRoadshowRequest();return;}
+  const rp=t.closest("[data-rrpick]"); if(rp){const parts=rp.dataset.rrpick.split(":");const id=parts[0],d=parts[1];const r=state.roadshowRequests.find(x=>x.id===id);if(r){r.status='scheduled';r.chosenDate=d;saveRequests();renderCalendar();toast('<span class="k">Scheduled</span> '+r.city+' for '+fmt(d)+' &middot; requester notified (prototype).');}return;}
+  const rdc=t.closest("[data-rrdecline]"); if(rdc){const r=state.roadshowRequests.find(x=>x.id===rdc.dataset.rrdecline);if(r){r.status='declined';saveRequests();renderCalendar();toast('Request marked declined &middot; requester notified (prototype).');}return;}
+  const rsi=t.closest("[data-rsinfo]"); if(rsi){toast('<span class="k">Facilitate-only roadshow</span> &mdash; expansion staffs the event; that campus owns its own admissions.');return;}
   const bd=t.closest("[data-board]"); if(bd){state.boardCampus=bd.dataset.board;renderPipeline();return;}
   const stu=t.closest("[data-student]"); if(stu){openStudent(+stu.dataset.student);return;}
   if(t.closest("[data-close]")){closeDrawer();return;}
@@ -3475,7 +3627,15 @@ $("#scopeSel").addEventListener("click",e=>{const b=e.target.closest("[data-scop
 });
 $("#viewParent").addEventListener("click",()=>{state.parentMode=true;render();window.scrollTo(0,0);});
 $("#viewExp").addEventListener("click",()=>{state.parentMode=false;render();window.scrollTo(0,0);});
-restore(); restoreCols(); restoreCampusColors(); restoreTeamLinks(); restoreActivity();
+restore(); restoreCols(); restoreCampusColors(); restoreTeamLinks(); restoreActivity(); restoreRequests();
+/* Seed a couple of incoming roadshow requests so the review queue isn't empty on first load. */
+if(!state.roadshowRequests.length){
+  state.roadshowRequests=[
+    {id:"rr_seed1", requesterName:"Marcus Webb", email:"marcus.webb@alpha.school", campusId:"tulsa", city:"Tulsa", dates:["2026-11-07","2026-11-21","2026-12-05"], status:"pending", submittedAt:"2026-10-12"},
+    {id:"rr_seed2", requesterName:"Priya Nair", email:"priya.nair@alpha.school", campusId:"southlake", city:"Southlake", dates:["2026-12-12","2027-01-16","2027-01-23"], status:"pending", submittedAt:"2026-10-15"}
+  ];
+  saveRequests();
+}
 /* Seed a little correspondence history so the activity log isn't empty on first load. */
 if(!state.activity.length){ const daysAgo=n=>{const d=new Date();d.setDate(d.getDate()-n);return d.toISOString();};
   const seed=(last,tplKey,n)=>{const s=STUDENTS.find(x=>x.last===last); if(s&&TEMPLATES[tplKey])state.activity.push({campusId:s.campus,studentIdx:s.idx,family:s.last,child:s.first+" "+s.last,tplKey,tplName:TEMPLATES[tplKey].name,when:daysAgo(n),by:TEAM[s.campus&&campusById[s.campus]?campusById[s.campus].owner:ME]||"You"});};
